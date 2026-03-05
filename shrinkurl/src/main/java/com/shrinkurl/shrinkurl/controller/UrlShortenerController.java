@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
@@ -22,7 +23,13 @@ public class UrlShortenerController {
     @PostMapping("/shorten")
     public ShortenUrlResponse shorten(@RequestBody @Valid ShortenUrlRequest request) {
         String code = service.createShortUrl(request.getLongUrl());
-        return new ShortenUrlResponse("http://localhost:8080/" + code);
+        String shortUrl = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/{code}")
+                .buildAndExpand(code)
+                .toUriString();
+
+        return new ShortenUrlResponse(shortUrl);
     }
 
     @GetMapping("/{shortCode}")

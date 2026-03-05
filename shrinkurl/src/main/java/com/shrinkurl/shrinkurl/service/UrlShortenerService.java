@@ -7,6 +7,7 @@ import com.shrinkurl.shrinkurl.util.Base62Encoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class UrlShortenerService {
@@ -21,6 +22,14 @@ public class UrlShortenerService {
     }
 
     public String createShortUrl(String longUrl) {
+        //check if URL exist already
+        Optional<UrlMapping> existingUrl = repository.findByLongUrl(longUrl);
+
+        if(existingUrl.isPresent()){
+            return existingUrl.get().getShortCode();
+        }
+
+        // create new mapping
         UrlMapping mapping = new UrlMapping();
         mapping.setLongUrl(longUrl);
         mapping.setCreatedAt(LocalDateTime.now());

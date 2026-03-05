@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "url_mapping")
+@Table(name = "url_mapping",
+        indexes = {
+            @Index(name = "idx_long_url", columnList = "long_url")
+        })
 public class UrlMapping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
